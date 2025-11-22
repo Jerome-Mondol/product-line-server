@@ -1,9 +1,11 @@
+import { MongoClient, ServerApiVersion } from 'mongodb';
+import dotenv from 'dotenv'
+dotenv.config();
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://<db_username>:<db_password>@crud.jtcvf7t.mongodb.net/?appName=crud";
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
+const MONGO_URI = process.env.MONGO_URI;
+
+const client = new MongoClient(MONGO_URI, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
@@ -11,16 +13,19 @@ const client = new MongoClient(uri, {
   }
 });
 
-async function run() {
+let db;
+
+export const connectDB = async () => {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
+    db = client.db("productLine");
+    console.log("Connected to MongoDB");
+  } catch (err) {
+    console.error("MongoDB connection error:", err);
   }
-}
-run().catch(console.dir);
+};
+
+export const getDB = () => {
+  if (!db) throw new Error("Database not initialized. Call connectDB first.");
+  return db;
+};

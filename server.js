@@ -1,9 +1,9 @@
 import express from 'express'
 import cors from 'cors'
-
 import jwtRoute from './routes/jwt.routes.js'
+import usersRoute from './routes/users.routes.js'
+import { connectDB } from './mongo.js';
 
-dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 
@@ -15,7 +15,10 @@ app.use(cors({
   credentials: true                // <--- allow cookies
 }));
 
+connectDB();
+
 
 app.use('/jwt', jwtRoute);
+app.use('/users', usersRoute);
 
 app.listen(PORT, () => console.log(`Server running on PORT: ${PORT}`));
