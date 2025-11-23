@@ -29,4 +29,16 @@ router.post('/create-user', async (req, res) => {
     }
 })
 
+router.post('/logout', (req, res) => {
+    try {
+        res.clearCookie('token', {
+            httpOnly: true,
+        })
+        res.status(200).json({ message: "Token removed successfully" })
+    }
+    catch(err) {
+        res.status(500).json({ message: "Internal server error" })
+    }
+})
+
 export default router;
