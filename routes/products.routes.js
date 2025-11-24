@@ -1,9 +1,10 @@
 import express from 'express'
 import { getDB } from '../mongo.js';
+import { verifyToken } from '../middlewares/verifyJWT.middleware.js';
 
 const router = express.Router();
 
-router.post('/add-products', async (req, res) => {
+router.post('/add-products', verifyToken, async (req, res) => {
     try {
         const { formData } = req.body;
         const db = getDB()
