@@ -20,6 +20,18 @@ router.post('/add-products', verifyToken, async (req, res) => {
     }
 })
 
+router.get('/all-products', async (req, res) => {
+    try {
+        const db = getDB();
+        const products = await db.collection('products').find({ }).toArray();
+
+        res.json(products);
+    }
+    catch(err) {
+        res.status(500).json({ message: "internal server error" })
+    }
+})
+
 
 
 export default router;

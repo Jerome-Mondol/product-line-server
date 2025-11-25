@@ -4,12 +4,16 @@ import jwtRoute from './routes/jwt.routes.js'
 import productsRoute from './routes/products.routes.js'
 import usersRoute from './routes/users.routes.js'
 import { connectDB } from './mongo.js';
+import cookieParser from "cookie-parser";
+
 
 
 const PORT = process.env.PORT || 5000;
 
 const app = express();
 
+
+app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
   origin: 'http://localhost:3000',

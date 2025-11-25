@@ -3,8 +3,9 @@ import jwt from 'jsonwebtoken';
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export const verifyToken = (req, res, next) => {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    
+    const token =  req.cookies.token;
+    console.log(token);
+
     if (!token) {
         return res.status(401).json({ 
             success: false,
@@ -17,7 +18,7 @@ export const verifyToken = (req, res, next) => {
         req.user = decoded;
         next();
     } catch (error) {
-        return res.status(400).json({ 
+        return res.status(401).json({ 
             success: false,
             message: 'Invalid token.' 
         });
