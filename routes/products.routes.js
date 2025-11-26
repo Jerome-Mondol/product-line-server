@@ -1,6 +1,7 @@
 import express from 'express'
 import { getDB } from '../mongo.js';
 import { verifyToken } from '../middlewares/verifyJWT.middleware.js';
+import { ObjectId } from 'mongodb';
 
 const router = express.Router();
 
@@ -31,6 +32,44 @@ router.get('/all-products', async (req, res) => {
         res.status(500).json({ message: "internal server error" })
     }
 })
+
+router.post('/my-products', async (req, res) => {
+  const userEmail = req.body.email;
+  const db = getDB();
+
+  try {
+    const result = await db.collection('products').find({ sellerEmail: userEmail }).toArray();
+
+    res.send(result);
+  }
+  catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+
+})
+
+
+router.get('/:id', async (req, res) => {
+  const { id } = await req.params;
+  const db = getDB();
+
+  try {
+    // Validate if id is a valid ObjectId
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid product ID' });
+    }
+
+    const product = await db.collection('products').findOne({ _id: new ObjectId(id) });
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    res.json(product);
+  } catch (err) {
+    console.error('Database error:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 
 
 
